@@ -18,15 +18,21 @@ object Huffman {
    * present in the leaves below it. The weight of a `Fork` node is the sum of the weights of these
    * leaves.
    */
-    abstract class CodeTree
+  abstract class CodeTree
   case class Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int) extends CodeTree
   case class Leaf(char: Char, weight: Int) extends CodeTree
   
 
   // Part 1: Basics
-    def weight(tree: CodeTree): Int = ??? // tree match ...
+  def weight(tree: CodeTree): Int = tree match {
+    case Leaf(_,w) => w
+    case Fork(_, _, _, w) => w
+  }
   
-    def chars(tree: CodeTree): List[Char] = ??? // tree match ...
+  def chars(tree: CodeTree): List[Char] = tree match {
+    case Leaf(c, _) => List(c)
+    case Fork(_,_,c,_) => c
+  }
   
   def makeCodeTree(left: CodeTree, right: CodeTree) =
     Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
@@ -69,7 +75,22 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = ???
+    def times(chars: List[Char]): List[(Char, Int)] = times(chars, List())
+    
+    def times(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] =
+      chars match {
+        case List() => acc
+        case x :: xs => times(xs, accumulate(x, acc))
+      }
+    
+    def accumulate(c: Char, acc: List[(Char, Int)]): List[(Char, Int)] = 
+      acc match {
+        case List() => List((c,1))
+        case x :: xs => x match {
+          case (`c`, n) => (c, n+1) :: xs
+          case p => p :: accumulate(c, xs) 
+        }
+      }
   
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.

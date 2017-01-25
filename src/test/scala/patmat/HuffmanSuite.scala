@@ -21,6 +21,43 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("times test 1") {
+    new TestTrees {
+      assert(times(List()) === List())
+    }
+  }
+
+  test("times test 2") {
+    new TestTrees {
+      assert(times(List('a')) === List(('a', 1)))
+    }
+  }
+
+  test("times test 3") {
+    new TestTrees {
+      assert(times(List('a', 'a')) === List(('a', 2)))
+    }
+  }
+
+  test("times test 4") {
+    new TestTrees {
+      assert(times(List('a', 'b')) === List(('a', 1), ('b', 1)))
+    }
+  }
+  
+  test("times test 5") {
+    new TestTrees {
+      assert(times(List('a', 'b', 'c')) === List(('a', 1), ('b', 1), ('c', 1)))
+    }
+  }
+
+  test("times test 6") {
+    new TestTrees {
+      assert(times(List('a', 'b', 'a')) === List(('a', 2), ('b', 1)))
+    }
+  }
+
+
 
   test("chars of a larger tree") {
     new TestTrees {
