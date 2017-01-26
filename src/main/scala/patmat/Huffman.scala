@@ -190,38 +190,21 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
-      println("10")
+    def decode(tree: CodeTree, bits: List[Bit]): List[Char] =
       bits match {
-        case Nil => {
-          println("20")
-          List()
-        }
-        case x :: xs => {
-          println("30")
-          decode(tree, tree, bits, List()).reverse
-        }
-    }
-    }
+        case Nil => List()
+        case x :: xs => decode(tree, tree, bits, List()).reverse
+      }
     
-    def decode(root: CodeTree, subTree: CodeTree, bits: List[Bit], acc: List[Char]): List[Char] = {
-      println("100")
-      if (bits.isEmpty) {
-        println("200")
-        acc
+    def decode(root: CodeTree, subTree: CodeTree, bits: List[Bit], acc: List[Char]): List[Char] =
+      subTree match {
+        case Leaf(c, _) => decode(root, root, bits, c :: acc)
+        case Fork(l, r, _, _) => 
+          if (bits.isEmpty) acc
+          else if (0 == bits.head) decode(root, l, bits.tail, acc)
+          else decode(root, r, bits.tail, acc)
+        
       }
-      else subTree match {
-        case Leaf(c, _) => {
-          println("300 c = "+c)
-          decode(root, root, bits.tail, c :: acc)
-        }
-        case Fork(l, r, _, _) =>{ 
-          println("400")
-          if (0 == bits.head) decode(root, r, bits.tail, acc)
-          else decode(root, l, bits.tail, acc)
-        }
-      }
-    }
   
   /**
    * A Huffman coding tree for the French language.
@@ -252,7 +235,15 @@ object Huffman {
     
     def encode(root: CodeTree, subTree: CodeTree, text: List[Char], acc:List[Bit]): List[Bit] =
       if (text.isEmpty) acc
-      else ???
+      else text match {
+        case List() => acc
+        case x :: xs => subTree match {
+          case Leaf(x, _) => acc
+          case Fork(l, r, _, _) =>
+            if (chars(l).contains(x)) ???
+            else ???
+        }
+      }
   
   // Part 4b: Encoding using code table
 
