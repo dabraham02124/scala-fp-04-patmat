@@ -234,14 +234,13 @@ object Huffman {
     def encode(tree: CodeTree)(text: List[Char]): List[Bit] = encode(tree, tree, text, List()).reverse
     
     def encode(root: CodeTree, subTree: CodeTree, text: List[Char], acc:List[Bit]): List[Bit] =
-      if (text.isEmpty) acc
-      else text match {
+      text match {
         case List() => acc
         case x :: xs => subTree match {
-          case Leaf(x, _) => acc
+          case Leaf(x, _) => encode(root, root, xs, acc)
           case Fork(l, r, _, _) =>
-            if (chars(l).contains(x)) ???
-            else ???
+            if (chars(l).contains(x)) encode(root, l, text, 0 :: acc )
+            else encode(root, r, text, 1 :: acc)
         }
       }
   

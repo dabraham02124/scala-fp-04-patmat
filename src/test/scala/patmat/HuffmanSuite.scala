@@ -112,7 +112,6 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
-  
   test("decode french") {
     new TestTrees {
       def decoded: List[Char] = decode(frenchCode, secret)
@@ -121,11 +120,30 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("encode easy") {
+    new TestTrees {
+      val code: CodeTree = Fork(Leaf('a',1),Leaf('b',2),List('a','b'),3)
+
+      val encoded: List[Bit] = encode(code)("ababbb".toList)
   
+      assert(encoded === List(0,1,0,1,1,1))
+    }
+  }
+
+
   test("decode and encode a very short text should be identity") {
     new TestTrees {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
     }
   }
 
+  test("encode & decode french") {
+    new TestTrees {
+      val decoded: List[Char] = decode(frenchCode, secret)
+      
+      val encoded = encode(frenchCode)(decoded) 
+  
+      assert(encoded === secret)
+    }
+  }
 }
