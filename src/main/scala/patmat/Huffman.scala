@@ -80,15 +80,15 @@ object Huffman {
     def times(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] =
       chars match {
         case List() => acc
-        case x :: xs => times(xs, accumulate(x, acc))
+        case x :: xs => times(xs, times(x, acc))
       }
     
-    def accumulate(c: Char, acc: List[(Char, Int)]): List[(Char, Int)] = 
+    def times(C: Char, acc: List[(Char, Int)]): List[(Char, Int)] = 
       acc match {
-        case List() => List((c,1))
+        case List() => List((C,1))
         case x :: xs => x match {
-          case (`c`, n) => (c, n+1) :: xs
-          case p => p :: accumulate(c, xs) 
+          case (C, n) => (C, n+1) :: xs
+          case p => p :: times(C, xs) 
         }
       }
   
@@ -99,12 +99,33 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[CodeTree] = iSort(makeOrderedLeafList(freqs, List()))
+    
+    def makeOrderedLeafList(freqs: List[(Char, Int)], acc: List[CodeTree]): List[CodeTree] = 
+      freqs match {
+        case List() => List()
+        case x :: xs => Leaf(x._1, x._2) :: makeOrderedLeafList(xs)
+    }
+    
+    def insert(i: CodeTree, l: List[CodeTree]): List[CodeTree] = l match {
+      case List() => List(i)
+      case y :: ys =>
+        if (weight(i) < weight(y)) i :: y :: ys
+        else y :: insert(i, ys)
+    }
+  
+    def iSort(l: List[CodeTree]): List[CodeTree] = l match {
+      case List() => List()
+      case x :: xs => insert(x, iSort(xs))
+    }
   
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-    def singleton(trees: List[CodeTree]): Boolean = ???
+    def singleton(trees: List[CodeTree]): Boolean = trees match {
+      case List() => false
+      case x :: xs => 0 == xs.size
+    }
   
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -118,7 +139,15 @@ object Huffman {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-    def combine(trees: List[CodeTree]): List[CodeTree] = ???
+    def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+      case x1 :: x2 :: xs =>
+        if (xs.isEmpty) List(join(x1, x2))
+        else insert(join(x1, x2), xs)
+      case List(_) => trees
+    }
+    
+    def join(l: CodeTree, r: CodeTree): CodeTree = 
+      Fork(l, r, chars(l) ::: chars(r), weight(l) + weight(r))
   
   /**
    * This function will be called in the following way:
@@ -137,7 +166,13 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-    def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+    def until(test: List[CodeTree] => Boolean, acc: List[CodeTree] => List[CodeTree])(in: List[CodeTree]): List[CodeTree] =
+    {
+      in match {
+        case List() => in
+        case x1 :: xs => until(test, acc)(acc(in))
+      }
+    }
   
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.

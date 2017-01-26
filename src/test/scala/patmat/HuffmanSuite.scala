@@ -57,7 +57,11 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
-
+  test("times test 7") {
+    new TestTrees {
+      assert(times(List('b', 'b', 'a')) === List(('b', 2), ('a', 1)))
+    }
+  }
 
   test("chars of a larger tree") {
     new TestTrees {
