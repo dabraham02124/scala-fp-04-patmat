@@ -146,4 +146,27 @@ class HuffmanSuite extends FunSuite {
       assert(encoded === secret)
     }
   }
+  
+  test("convert easy") {
+    new TestTrees {
+      val code: CodeTree = Fork(Leaf('a',1),Leaf('b',2),List('a','b'),3)
+
+      assert(convert(code) === List(('a', List(0)),('b', List(1))))
+    }
+  }
+
+  test("convert middle") {
+    new TestTrees {
+      val code: CodeTree = Fork(Leaf('a',1),Fork(Leaf('b',2),Leaf('c',3),List('b','c'),5),List('a','b','c'),6)
+
+      assert(convert(code) === List(('a',List(0)),('b',List(1,0)),('c',List(1,1))))
+    }
+  }
+
+  test("quickConvert") {
+    new TestTrees {
+      val list = "arugula is a vegetable".toList
+      assert(quickEncode(frenchCode)(list) === encode(frenchCode)(list))
+    }
+  }
 }
