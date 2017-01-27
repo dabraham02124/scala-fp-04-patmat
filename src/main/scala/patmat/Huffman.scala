@@ -140,6 +140,7 @@ object Huffman {
    * unchanged.
    */
     def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+      case List() => List()
       case x1 :: x2 :: xs =>
         if (xs.isEmpty) List(join(x1, x2))
         else insert(join(x1, x2), xs)
