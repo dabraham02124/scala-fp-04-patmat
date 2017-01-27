@@ -168,10 +168,8 @@ object Huffman {
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
     def until(test: List[CodeTree] => Boolean, acc: List[CodeTree] => List[CodeTree])(in: List[CodeTree]): List[CodeTree] =
-    {
       if (test(in)) in
       else until(test, acc)(acc(in))
-    }
   
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
@@ -204,7 +202,6 @@ object Huffman {
           if (bits.isEmpty) acc
           else if (0 == bits.head) decode(root, l, bits.tail, acc)
           else decode(root, r, bits.tail, acc)
-        
       }
   
   /**
